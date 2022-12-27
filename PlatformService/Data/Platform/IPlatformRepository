@@ -1,0 +1,18 @@
+using PlatformService.Models;
+using Microsoft.EntityFrameworkCore;
+public interface IPlatformRepository
+{
+    
+}
+
+namespace PlatformService.Repository.Platform
+{
+    public class PlatformRepository : IPlatformRepository
+    {
+        public PlatformRepository()
+        {
+            
+        }
+
+    }
+}
