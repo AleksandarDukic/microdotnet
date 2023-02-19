@@ -1,16 +1,20 @@
 using PlatformService.Data;
-using PlatformService.Repository.Platform;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
+
+PrepDb.PrepPopulation(app);
+//builder.Services.AddDbContext<AppDbContext>();
+//builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
