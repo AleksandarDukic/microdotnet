@@ -1,4 +1,6 @@
 using PlatformService.Data;
+using PlatformService.SyncDataServices.Http;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,11 +8,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
+builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>().ConfigurePrimaryHttpMessageHandler(h =>
+{
+    var handler = new HttpClientHandler();
+/*     if (this.env.IsDevelopment())
+    { */
+        //Allow untrusted Https connection
+        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+/*     } */
+    return handler;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
+
+Console.WriteLine($"--> CommandService Endpoint {app.Configuration["CommandService"]}");
 
 PrepDb.PrepPopulation(app);
 //builder.Services.AddDbContext<AppDbContext>();
@@ -30,3 +44,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// 4:09
